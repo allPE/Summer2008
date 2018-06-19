@@ -1,0 +1,2 @@
+# Blackjack
+This directory contains resources that support the Blackjack Raspberry Pi Project.  The challenge is to Program a blackjack-playing client to compete against other teams and the house.  Example client code in Python will be provided, along with a page of specifications about the API used to talk to the server.  While Python is provided, the API is simple enough that any programming language is permitted.  The server and a monitoring program are already running to handle the House side and provide a visualization.
