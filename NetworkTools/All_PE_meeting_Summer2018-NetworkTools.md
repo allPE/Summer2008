@@ -92,7 +92,7 @@ your team (including the WAN Simulator team) to decide what kind of testing do.
 Depending on your level of expertise on python, automation, linux and other topics, you might want to try the following challenges:
 
 * Instead of using a DHCP server, use [scapy](https://scapy.readthedocs.io/en/latest/) to build your own server to intercept DHCP request and send your own responses. NOTE: scapy should be already installed in your Pi, but if it is not, you can find information about how to install it [here](https://github.com/secdev/scapy).
-* Use any Web Framework for Python (i.e. [Flask](http://flask.pocoo.org), [Django](https://www.djangoproject.com), [web2py](web2py), etc.) to provide a web-based interface for the Route Server.
+* Use any Web Framework for Python (i.e. [Flask](http://flask.pocoo.org), [Django](https://www.djangoproject.com), [web2py](https://github.com/web2py/web2py), etc.) to provide a web-based interface for the Route Server.
 * Instead accessing the switches directly and use CLI, try to use the [Arista library for Robot Framework](https://github.com/aristanetworks/robotframework-aristalibrary) to build your own test suite.
 * Build your own [WAN simulator](https://github.com/allPE/Summer2018/tree/master/WanSimulator).
 
