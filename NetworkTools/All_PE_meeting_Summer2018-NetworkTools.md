@@ -99,5 +99,5 @@ Depending on your level of expertise on python, automation, linux and other topi
 
 
 ```
-The information contained herein is confidential and should not be disclosed, copied, or duplicated in any manner without written permission from Charter Communications<sup>TM</sup>.
+The information contained herein is confidential and should not be disclosed, copied, or duplicated in any manner without written permission from Charter Communications.
 ```
