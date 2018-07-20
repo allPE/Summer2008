@@ -58,7 +58,9 @@ Depending on your level of expertise on python, linux and other topics, you migh
 
 * Instead of using tcconfig, you might directly use Linux [Traffic Control](https://www.tldp.org/HOWTO/html_single/Traffic-Control-HOWTO/) and manipulate the packets directly (which it is pretty much what tcconfig is doing).
 * Use any Web Framework for Python (i.e. [Flask](http://flask.pocoo.org/), [Django](https://www.djangoproject.com/), [web2py](https://github.com/allPE/Summer2018/blob/master/NetworkTools/web2py), etc.) to provide a web-based interface for the WAN simulator.
+* Instead of copying the code to the 2nd Pi, build your own content filtering engine based on [Pi-hole](https://pi-hole.net).  In this case, you might want to connect your laptop to your Pi and use it as Internet gateway, and check if the ads get effectively blocked.
 
+![alt text](https://github.com/allPE/Summer2018/blob/master/WanSimulator/All-PE-NT-Fig4.png "Pi-hole as ad-blocker")
 
 ```
 The information contained herein is confidential and should not be disclosed, copied, or duplicated in any manner without written permission from Charter Communications.
