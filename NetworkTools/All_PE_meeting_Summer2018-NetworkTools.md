@@ -47,7 +47,7 @@ Your group will be integrated by at least 3 or 4 engineers. There should be 6 gr
 
 Each group will have 3 switches/routers that will be connected as follows:
 
-![alt text](https://github.com/allPE/Summer2018/blob/master/NetworkTools/All-PE-NT-Fig1.png "Network Setup")
+![alt text](All-PE-NT-Fig1.png "Network Setup")
 
 Each group of switches will have their own management network, so one ZTP server might be used to send the basic configuration of all the
 devices, and an additional Pi can be used to push any additional configuration.
