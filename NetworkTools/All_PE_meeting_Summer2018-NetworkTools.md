@@ -3,8 +3,7 @@
 
 ## 1. Objective
 
-The objective of this project is to "build" a ZTP (Zero Touch Provisioning) server functionality in your Pi that will "push" the minimal configuration
-to a switch/router.
+The objective of this project is to "build" a ZTP (Zero Touch Provisioning) server functionality in your Pi that will "push" the minimal configuration to a switch/router.
 
 This minimal configuration includes:
 
@@ -12,8 +11,7 @@ This minimal configuration includes:
 * User credentials for API access
 * Enable API access for configuration changes
 
-Once the minimal configuration is loaded in the device, the rest of the configuration will be sent using a python program that you will have to write
-using the available [libraries](https://github.com/arista-eosplus/pyeapi) for that purpose.
+Once the minimal configuration is loaded in the device, the rest of the configuration will be sent using a python program that you will have to write using the available [libraries](https://github.com/arista-eosplus/pyeapi) for that purpose.
 
 In addition, you will need to write a "route server" functionality in your Pi in order send the necessary information to the switches:
 
@@ -49,8 +47,7 @@ Each group will have 3 switches/routers that will be connected as follows:
 
 ![alt text](https://github.com/allPE/Summer2018/blob/master/NetworkTools/All-PE-NT-Fig1.png "Network Setup")
 
-Each group of switches will have their own management network, so one ZTP server might be used to send the basic configuration of all the
-devices, and an additional Pi can be used to push any additional configuration.
+Each group of switches will have their own management network, so one ZTP server might be used to send the basic configuration of all the devices, and an additional Pi can be used to push any additional configuration.
 
 How you divide the work is up to your team to decide.
 
@@ -61,8 +58,7 @@ To access your PI, you should:
 * Connect to the on-board LAN port of your Pi and ssh/telnet directly to it.
 * Identify which IP address was assigned to the WLAN interface.
 * Disconnect the cabled connection and try to access your Pi though the WLAN interface.
-* The on-board LAN interface on your Pi will be used to establish connection with the vSwitches and be used by the ZTP and Route
-servers.
+* The on-board LAN interface on your Pi will be used to establish connection with the vSwitches and be used by the ZTP and Route servers.
 
 In order to be able to perform the base tasks of this project, the following has to be installed in your Raspberry Pi:
 
@@ -79,11 +75,9 @@ In order to be able to perform the base tasks of this project, the following has
 
 ## 5. Interaction with WAN Simulator project
 
-Once your network is up and running, you will have to interact with one group on the WAN simulator project in order to add 1 or 2 WAN simulator
-in the links between your switches.
+Once your network is up and running, you will have to interact with one group on the WAN simulator project in order to add 1 (one) WAN simulator in the links between your switches.
 
-The WAN simulator will modify parameters in the link in order to simulate particular scenarios: satellite like delay, packet drops, etc. It is up to
-your team (including the WAN Simulator team) to decide what kind of testing do.
+The WAN simulator will modify parameters in the link in order to simulate particular scenarios: satellite like delay, packet drops, etc. It is up to your team (including the WAN Simulator team) to decide what kind of testing do.
 
 ![alt text](https://github.com/allPE/Summer2018/blob/master/NetworkTools/All-PE-NT-Fig2.png "WAN Simulator Integration")
 
