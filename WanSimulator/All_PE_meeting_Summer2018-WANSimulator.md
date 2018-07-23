@@ -5,8 +5,7 @@
 
 The objective of this project is to build a WAN simulator using your Pi.
 
-Your Pi should act as a "transparent" device, so if it's installed/inserted in the middle of a link between two other devices, no IP configuration
-change is required to keep connectivity between such devices.
+Your Pi should act as a "transparent" device, so if it's installed/inserted in the middle of a link between two other devices, no IP configuration change is required to keep connectivity between such devices.
 
 Through your simulator, you should be able to do the following, independently of the type of traffic (IPv4 or IPv6):
 
@@ -20,7 +19,7 @@ Your group should be integrated by 2 engineers, but if you prefer to work alone 
 
 Each group will have 2 additional USB/Ethernet dongle for their Pi.
 
-Each group should be able to present 1 or 2 WAN simulators that will be used by a team on the Network Tools project.
+Each group should be able to present 1 (one) WAN simulator that will be used by a team on the Network Tools project.
 
 ![alt text](https://github.com/allPE/Summer2018/blob/master/WanSimulator/All-PE-NT-Fig3.png "WAN Simulator")
 
@@ -31,8 +30,7 @@ To access your PI, you should:
 * Connect to the on-board LAN port of your Pi and ssh/telnet directly to it.
 * Identify which IP address was assigned to the WLAN interface.
 * Disconnect the cabled connection and try to access your Pi though the WLAN interface.
-* The 2 LAN interfaces on each Pi will be used by the WAN simulator. In order to do this, you should disable the DHCP server on the on-
-board LAN interface.
+* The 2 LAN interfaces on each Pi will be used by the WAN simulator. In order to do this, you should disable the DHCP server on the on-board LAN interface.
 
 To perform the base tasks of this project, the following should be installed in your Raspberry Pi:
 
@@ -47,8 +45,7 @@ To perform the base tasks of this project, the following should be installed in 
 
 Once your WAN simulator is ready, it will be added to the Network Tools project in order to test its capabilities.
 
-The WAN simulator will modify parameters in the link in order to simulate particular scenarios: satellite like delay, packet drops, etc. It is up to
-your team (including the Network Tools team) to decide what kind of testing do.
+The WAN simulator will modify parameters in the link in order to simulate particular scenarios: satellite like delay, packet drops, etc. It is up to your team (including the Network Tools team) to decide what kind of testing do.
 
 ![alt text](https://github.com/allPE/Summer2018/blob/master/WanSimulator/All-PE-NT-Fig2.png "Network Tools Integration")
 
