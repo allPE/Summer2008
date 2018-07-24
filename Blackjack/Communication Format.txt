@@ -1,0 +1,183 @@
+This file is best viewed in a monospaced font.
+
+Short summary: A simulated blackjack game, with players starting with 10,000 Randy Bucks (fake currency).  At the end
+ of the PE meeting, we will reset everyone's bank accounts, and do a demo with a fixed number of hands ran back to back
+ - the client that wins the most wins a fabulous prize.  Additional prizes may be awarded for novel approaches.
+
+If you need an introduction to blackjack, the Wikipedia article at https://en.wikipedia.org/wiki/Blackjack may help.
+
+The server is listening at the provided IP address, TCP port 9876.  If the socket connection to the server is dropped, the
+ client should reconnect and start with the LOGIN process described below.  (This may happen if we update the server
+ code or the like).
+
+The server operates as the dealer, and the following rules of blackjack are observed (blackjack pros will recognize
+ nearly all of these favor the player instead of the house, since we're playing with fake money "Randy Bucks" anyway).
+
+- Surrender is not offered
+- Double down is permitted on 9,10,11 only.
+- Splits are permitted:
+  - Re-splits are permitted, up to 4 hands.
+  - Hitting and re-splitting split aces is permitted.
+  - Double downs after splits are permitted.
+  - Getting a 21 in two cards after a split is a "soft" 21, not a blackjack.
+  - All the 10-value cards count as identical for splitting (so you can split a Jack/Queen pair)
+- Insurance is offered, at maximum insurance (half the original bet), with 2:1 payout.  Dealer does check hole card
+  after insurance and before the first round of betting.
+- Dealer stands on soft 17.
+- Blackjack pays out at 3:2.
+- Ties are considered a push (nothing gained, nothing lost).
+
+Throughout this document, lines starting "S:" are from the server to the client, and "C:" are from the client to the
+ server.  All commands and responses are in the form of <VERB>[ <DATA>], with the optional data.  At any point, if the
+ clients sends an invalid command, the server replies with INVALID, optionally with a string explaining why, and
+ re-issues the previous message.  The server also offers a "HELP" command that gives the commands list, as a refresher
+ if you are testing via telnet.  Clients MUST respond within 1.0 seconds of the server prompts (in order to keep the game
+ moving) once logged in, otherwise the server will send a TIMEOUT message and take a default action.  The server may
+ pause for a period of time between hands, or may not.
+
+It will initially identify itself and a version number that will give a hint if we fixed something:
+S:HELLO BlackjackServer v1.00
+
+Players must register themselves with the server via the REGISTER command, which returns a 32-byte TOKEN if the name is
+ not already used, and INVALID if it is not.
+C:REGISTER Playername
+S:TOKEN f5db0a04b3aed563e57d1fad8374483f
+
+Players then login with either the newly created token, or one they've saved from previous work (the server remembers
+ the logins for the lifetime of this project).  The server returns OK on success, or INVALID if not.
+C:LOGIN f5db0a04b3aed563e57d1fad8374483f
+S:OK
+
+After getting an "OK" from the server, on the next hand the server runs, the server will give a READY message giving the
+ number of Randy Bucks you have, the number of decks in play (which may change during the game depending on the number
+ of clients playing), and the number of cards left in the shoe at the start of a hand - for example, if it reshuffles a
+ 6-deck shoe, it will show 312 cards left.
+S:READY 15239 6 79
+
+The client should respond to READY with what its BET for that hand is.  A bet of 0 will result in the client being left
+ out of the next deal, although it will receive the DONE for the hand with the players hand shown as ----.  If the
+ client times out, 0 is assumed.  BETs must be even numbers, as the server won't hand out fractional Randy Bucks, and
+ a few payouts have 3:2 options.
+C:BET 20
+
+When the server deals, each client will get asked in turn what ACT wants to do, with the state of cards that have been
+ on the field in this hand.  The client's hand is always listed first, the dealer's second, all other players in play
+ after that in inconsistent order.  In the example below, the player has the 9 of spades and 9 of diamonds, the dealer
+ is showing the ten of clubs and has their card hidden, another player has a 2 of spaces and 4 of diamonds, and the last
+ player has a 5 of spades, 6 of spades, and a jack of hearts.
+
+NOTE: The server MAY opt to run all players simultaneously, instead of in sequence, when the number of clients gets
+large.
+
+S:ACT 9S9D TC?? 2S4D 5S6SJH
+
+=== Side note: Insurance ===
+If the dealer shows an Ace at start, instead of an ACT, the client will be offered insurance, with the other cards shown
+ in the same format as ACT:
+S:INSURANCE 9S9D AC?? 2S4D 5S5S
+
+The client just replies with YES or NO, depending on if it wants insurance or not, and taking it costs half the original
+ bet (for blackjack pros, this means only maximum insurance is offered).  If the dealer does not get blackjack, it will
+ get a follow-up ACT and the hand proceeds as usual.  If it does, a DONE occurs immediately with the outcome.  If
+ the client times out, NO is assumed.
+
+Note: The server will not offer INSURANCE if you cannot afford it.
+=============================
+
+The client at this point must reply to ACT with an action - HIT, STAND, SPLIT, or DOUBLE (for double down).  If the
+ client times out, STAND is assumed.  When a player DOUBLEs, the hand ends with '+' to mark that.  Otherwise, finished
+ hands end with a '.'
+
+If the player requests a (valid) split, the server will execute and return more ACT commands, asking for each hand in
+ turn.  The splits are separated by a "/" (including splits other players have done), with the current active hand being
+ asked about remaining first.  The client then can proceed through all the hands.
+
+At the end of the hand, the server provides a DONE message, with the full table visible, a colon, and the total amount
+ won (positive numbers) or lost (negative numbers) by the player on the hand.
+
+=== Example hands ===
+A full hand may be as follows (comments are after # marks on each line) - one player went before this one:
+S:READY 15239 6 79
+C:BET 20
+S:INSURANCE 9S9D AC?? 2S4D. 5S6SJH
+C:NO
+S:ACT 9S9D AC?? 2S4D. 5S6SJH
+C:SPLIT
+S:ACT 9STH/9D2S AC?? 2S4D. 5S6SJH
+C:STAND
+S:ACT 9D2S/9STH. AC?? 2S4D. 5S6SJH
+C:DOUBLE
+S:DONE 9D2STH+/9STH. AC5H7DJH. 2S4DTDJS. 5S6SJC.:60  # Dealer busted.  Player wins 20 for one split, 40 for the other
+                                                     # (since they doubled down, as denoted by the '+')
+
+Another hand, where the player gets blackjack, may be as follows:
+S:READY 15314 6 62
+C:BET 50
+S:DONE AHJD. 3D5HJC. 7H7D7C.:75    # Player got blackjack and the dealer did not, so player doesn't even get an option
+                                   # to play anything (although the other players did).  Player gets paid out at 3:2.
+
+A hand where the player sits out:
+S:READY 15391 6 54
+C:BET 0
+S:DONE ---- 3D5HJC. 7H7D7C.:0     # Player sat out, wins and losses nothing.
+
+A hand where the player busts, and the server has reshuffled the shoe:
+S:READY 15391 6 314
+C:BET 200
+S:ACT 3D3H 9H??
+C:HIT
+S:ACT 3D3H9C 9H??
+C:HIT
+S:DONE 3D3H9CTH. 9HTC.:-200       # Player busted.
+
+A crazy hand, including an INVALID response:
+S:READY 15391 6 314
+C:BET 200
+S:ACT AHAD 9H??
+C:SPLIT
+S:ACT AHAS/ADAC 9H??
+C:SPLIT
+S:ACT AHTD/ASTS/ADAC 9H??
+C:STAND
+S:ACT ASTS/ADAC/AHTD. 9H??
+C:STAND
+S:ACT ADAC/AHTD./ASTS. 9H??
+C:SPLIT
+S:ACT ADAH/AC9H/AHTD./ASTS. 9H??
+C:SPLIT
+S:INVALID Bad command - valid commands: HIT STAND  # You can't split again - already have 4 hands.
+S:ACT ADAH/AC9H/AHTD./ASTS. 9H??
+C:HIT
+S:ACT ADAHTC/AC9H/AHTD./ASTS. 9H??
+C:HIT
+S:ACT ADAHTC8H/AC9H/AHTD./ASTS. 9H??
+C:STAND
+S:ACT AC9H/AHTD./ASTS./ADAHTC8H. 9H??
+C:DOUBLE
+S:DONE AC9HTD+/AHTD./ASTS./ADAHTC8H. 9H3CTH.:1000  # Dealer busted, all hands won, including the double-down.
+
+A hand showing a very confused client ending up ignored by the server:
+S:READY 981 4 52
+C:BET 1000
+S:INVALID You do not have enough Randy Bucks for that bet.
+S:READY 981 4 52
+C:BET 1000
+S:INVALID You do not have enough Randy Bucks for that bet.
+S:READY 981 4 52
+C:BET 1000
+S:INVALID You do not have enough Randy Bucks for that bet.
+S:READY 981 4 52
+S:TIMEOUT
+S:DONE ---- 2D9HTD:0     # Player sat out, wins and losses nothing.
+=====================
+
+Some client programming hints:
+- You can use a basic telnet command to talk to the server and test things out.
+- The server responses are all unique (i.e. we don't re-use a server verb anywhere), thus the client does not need to
+  maintain state.
+- If the client doesn't know what to do with a server verb, ignoring it and let the server timeout is always a safe
+  (although probably not ideal) option.
+- If people get lost on some parts of this project, there is a checkpoints planned: 3 hours in, we will release basic
+  code that implements the most basic client possible (including the socket handling, etc.)
+- There may be weaknesses in the above specification.  People are encouraged to explore and exploit (bonus points may be
+  awarded for particularly novel ideas).  The server may catch you though (although the worst it will do is INVALID).
