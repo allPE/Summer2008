@@ -71,6 +71,8 @@ def get_from_server(sock: socket) -> (str, str):
             raise ConnectionError("No communication from server in 300 seconds.")
         m = cmd_regex.match(ret)
         if m:
+            if m.group(2) is None:
+                return (m.group(1).upper().strip(), "")
             return (m.group(1).upper().strip(), m.group(2).upper().strip())
         raise ValueError("Did not understand message from server: " + ret)
 
